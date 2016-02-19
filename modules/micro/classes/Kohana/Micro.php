@@ -15,27 +15,41 @@ class Kohana_Micro extends Controller_Template {
     protected static $_requestHandleObject;
 
     /**
-     * Request Object
-     * @var type 
+     * Returns the request handle object
+     * @return mixed
      */
-    private static $_requestObject;
-
-    /**
-     * Getter Request Object
-     * @return type
-     */
-    public static function getRequestObject() {
-        return self::$_requestObject;
+    public static function getRequestHandleObject() {
+        return self::$_requestHandleObject;
     }
 
     /**
-     * Setter Request Object
-     * @param type $requestObject
+     * Contains sessionObject
+     * @var
      */
-    public static function setRequestObject($requestObject) {
-        self::$_requestObject = $requestObject;
+    protected static $_sessionObject;
+
+    /**
+     * Returns the session object
+     * @return mixed
+     */
+    public static function getSessionObject() {
+        return self::$_sessionObject;
     }
-    
+
+    /**
+     * Contains templateObject
+     * @var
+     */
+    protected static $_templateObject;
+
+    /**
+     * Returns the template object
+     * @return mixed
+     */
+    public static function getTemplateObject() {
+        return self::$_templateObject;
+    }
+
     /**
      * Contains the template
      * @var type 
@@ -56,6 +70,28 @@ class Kohana_Micro extends Controller_Template {
      */
     public static function getTemplate() {
         return self::$_template;
+    }
+
+    /**
+     * Request Object
+     * @var type
+     */
+    private static $_requestObject;
+
+    /**
+     * Getter Request Object
+     * @return type
+     */
+    public static function getRequestObject() {
+        return self::$_requestObject;
+    }
+
+    /**
+     * Setter Request Object
+     * @param type $requestObject
+     */
+    public static function setRequestObject($requestObject) {
+        self::$_requestObject = $requestObject;
     }
 
     /**
@@ -90,6 +126,12 @@ class Kohana_Micro extends Controller_Template {
         // Require request layer
         require_once MODPATH . '/micro/classes/Helper/RequestHandle.php';
 
+        // Require template helper
+        require_once MODPATH . '/micro/classes/Helper/Template.php';
+
+        // Require session helper
+        require_once MODPATH . '/micro/classes/Helper/Session.php';
+
         // Set request object
         self::setRequestObject($requestObject);
 
@@ -98,9 +140,17 @@ class Kohana_Micro extends Controller_Template {
 
         // Init the requestHandle
         $requestHandleObject = self::$_requestHandleObject = new Micro_RequestHandle();
-        // Get the session
-        $session = Session::instance();
 
+        // Init the template
+        self::$_templateObject = new Micro_Template();
+
+        // Init the session
+        $sessionObject = self::$_sessionObject = new Micro_Session();
+
+        // Get the session
+        $session = $sessionObject::instance();
+
+        // Execute the current request
         $requestHandleObject::init($requestObject);
 
         // Done

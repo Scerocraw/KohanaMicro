@@ -28,10 +28,22 @@ class Controller_Welcome extends Controller_Template {
         $this->session = Session::instance();
 
         // Init the micro
-        $micro = Micro::init($this->request, $this->response);
+        Micro::init($this->request, $this->response);
 
         // Get view
         $view = View::factory(Micro::getTemplate());
+
+        // Get template object
+        $templateObject = Micro::getTemplateObject();
+
+
+        $templateObject::setTemplateVariable('version', '1234');
+
+        // Iterate template vars
+        foreach($templateObject::getAllTemplateVariables() as $key => $variable) {
+            // Add into variable container for the render
+            View::set_global($key, $variable);
+        }
         
         // Render the assigned stuff
         $this->template->content = $view->render();
